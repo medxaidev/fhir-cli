@@ -1,0 +1,13 @@
+# node
+node_modules/
+
+# build
+dist/
+
+# FHIR packages (local junctions/symlinks to system cache)
+fhir-packages/
+
+# data (SQLite databases)
+data/
+
+devdocs/
