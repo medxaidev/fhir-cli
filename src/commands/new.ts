@@ -9,11 +9,11 @@ import { printSuccess, printInfo, printWarning } from '../core/output.js';
 import { handleError } from '../core/error-handler.js';
 
 export const newCommand = new Command('new')
-  .description('创建新 FHIR 项目')
-  .argument('[project-name]', '项目名称')
-  .option('--fhir-version <version>', 'FHIR 版本', 'R4')
-  .option('--database <type>', '数据库类型 (sqlite|postgres)', 'sqlite')
-  .option('--template <type>', '模板类型 (minimal|full)', 'minimal')
+  .description('Create a new FHIR project')
+  .argument('[project-name]', 'Project name')
+  .option('--fhir-version <version>', 'FHIR version', 'R4')
+  .option('--database <type>', 'Database type (sqlite|postgres)', 'sqlite')
+  .option('--template <type>', 'Template type (minimal|full)', 'minimal')
   .action(async (projectName?: string, opts?: Record<string, string>) => {
     try {
       // Interactive prompts for missing options
@@ -22,15 +22,15 @@ export const newCommand = new Command('new')
           {
             type: projectName ? null : 'text',
             name: 'name',
-            message: '项目名称:',
+            message: 'Project name:',
             initial: 'my-fhir-app',
           },
           {
             type: 'select',
             name: 'database',
-            message: '数据库:',
+            message: 'Database:',
             choices: [
-              { title: 'SQLite (推荐)', value: 'sqlite' },
+              { title: 'SQLite (recommended)', value: 'sqlite' },
               { title: 'PostgreSQL', value: 'postgres' },
             ],
             initial: opts?.database === 'postgres' ? 1 : 0,
@@ -38,13 +38,13 @@ export const newCommand = new Command('new')
           {
             type: 'confirm',
             name: 'usCore',
-            message: '包含 US Core IG?',
+            message: 'Include US Core IG?',
             initial: false,
           },
           {
             type: 'select',
             name: 'packageManager',
-            message: '包管理器:',
+            message: 'Package manager:',
             choices: [
               { title: 'npm', value: 'npm' },
               { title: 'pnpm', value: 'pnpm' },
@@ -66,24 +66,24 @@ export const newCommand = new Command('new')
 
       const resolveResult = await createProject(name, options);
 
-      printSuccess(`项目 ${name} 创建成功。`);
+      printSuccess(`Project ${name} created successfully.`);
 
       // Display package resolution results
       if (resolveResult.success) {
         for (const pkg of resolveResult.packages) {
-          printInfo(`已解析 ${pkg.name}@${pkg.version} (${pkg.source})`);
+          printInfo(`Resolved ${pkg.name}@${pkg.version} (${pkg.source})`);
         }
       } else {
         for (const pkg of resolveResult.packages) {
-          printInfo(`已解析 ${pkg.name}@${pkg.version} (${pkg.source})`);
+          printInfo(`Resolved ${pkg.name}@${pkg.version} (${pkg.source})`);
         }
         for (const err of resolveResult.errors) {
           printWarning(`${err.name}: ${err.error}`);
         }
-        printWarning('部分 FHIR 包解析失败，可稍后使用 fhir ig install 重试。');
+        printWarning('Some FHIR packages failed to resolve. You can retry later with fhir ig install.');
       }
 
-      console.log(`\n下一步:`);
+      console.log(`\nNext steps:`);
       console.log(`  cd ${name}`);
       console.log(`  ${options.packageManager} install`);
       console.log(`  fhir doctor`);

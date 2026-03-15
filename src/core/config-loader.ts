@@ -60,10 +60,10 @@ export async function initEngineForCommand(
     const configPath = resolve(cwd, options.config);
     if (!existsSync(configPath)) {
       throw new CliError(
-        `配置文件不存在: ${configPath}`,
+        `Config file not found: ${configPath}`,
         'CONFIG_NOT_FOUND',
         ExitCode.CONFIG_ERROR,
-        '请检查 --config 参数指定的路径是否正确。',
+        'Check that the path specified by --config is correct.',
       );
     }
     const config = await loadFhirConfig(configPath);
@@ -79,9 +79,9 @@ export async function initEngineForCommand(
 
   // 3. Not found
   throw new CliError(
-    '未找到 fhir.config.json',
+    'fhir.config.json not found',
     'CONFIG_NOT_FOUND',
     ExitCode.CONFIG_ERROR,
-    '请在 FHIR 项目目录中运行，或使用 fhir new 创建新项目。',
+    'Run inside a FHIR project directory, or create one with fhir new.',
   );
 }

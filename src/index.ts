@@ -19,7 +19,7 @@ const program = new Command();
 program
   .name('fhir')
   .description('The developer toolkit for building FHIR applications')
-  .version('0.3.0');
+  .version('0.4.0');
 
 // Register commands
 program.addCommand(newCommand);

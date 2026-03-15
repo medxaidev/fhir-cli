@@ -55,7 +55,7 @@ function generatePackageJson(options: ProjectOptions): string {
       start: 'fhir engine start',
     },
     dependencies: {
-      'fhir-engine': '^0.4.0',
+      'fhir-engine': '^0.5.1',
     },
   };
   return JSON.stringify(pkg, null, 2) + '\n';
@@ -99,10 +99,10 @@ export async function createProject(
 
   if (existsSync(projectPath)) {
     throw new CliError(
-      `目录已存在: ${projectPath}`,
+      `Directory already exists: ${projectPath}`,
       'DIR_EXISTS',
       ExitCode.RUNTIME_ERROR,
-      '请选择一个不存在的目录名称。',
+      'Please choose a directory name that does not already exist.',
     );
   }
 

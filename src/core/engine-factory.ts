@@ -24,7 +24,7 @@ export async function createEngineForCli(
         message,
         'INVALID_CONFIG',
         ExitCode.CONFIG_ERROR,
-        '请检查 fhir.config.json 中的 database 配置。',
+        'Check the database configuration in fhir.config.json.',
       );
     }
 
@@ -33,25 +33,34 @@ export async function createEngineForCli(
         message,
         'INVALID_CONFIG',
         ExitCode.CONFIG_ERROR,
-        '请检查 fhir.config.json 中的 packages.path 是否指向有效的 FHIR 包目录。',
+        'Check that packages.path in fhir.config.json points to a valid FHIR package directory.',
       );
     }
 
-    if (message.includes('PostgreSQL')) {
+    if (message.includes('ECONNREFUSED') || message.includes('connect ECONNREFUSED')) {
       throw new CliError(
         message,
-        'UNSUPPORTED_DATABASE',
+        'DATABASE_CONNECTION_FAILED',
         ExitCode.CONFIG_ERROR,
-        'fhir-cli MVP 仅支持 SQLite。请将 database.type 设为 "sqlite"。',
+        'Could not connect to PostgreSQL. Ensure the server is running and the connection URL in fhir.config.json is correct.',
+      );
+    }
+
+    if (message.includes('password authentication failed') || message.includes('FATAL')) {
+      throw new CliError(
+        message,
+        'DATABASE_AUTH_FAILED',
+        ExitCode.CONFIG_ERROR,
+        'PostgreSQL authentication failed. Check the username, password, and database name in your connection URL.',
       );
     }
 
     // Generic engine error
     throw new CliError(
-      `引擎启动失败: ${message}`,
+      `Engine failed to start: ${message}`,
       'ENGINE_INIT_FAILED',
       ExitCode.RUNTIME_ERROR,
-      '请运行 fhir doctor 检查环境配置。',
+      'Run fhir doctor to check your environment.',
     );
   }
 }

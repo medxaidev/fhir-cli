@@ -7,13 +7,13 @@ import { printJson, printSuccess, printInfo } from '../core/output.js';
 import { handleError } from '../core/error-handler.js';
 
 export const engineCommand = new Command('engine')
-  .description('FHIR 引擎生命周期管理');
+  .description('FHIR engine lifecycle management');
 
 engineCommand
   .command('status')
-  .description('显示引擎状态')
-  .option('--config <path>', '配置文件路径')
-  .option('--format <format>', '输出格式 (json|table)', 'table')
+  .description('Show engine status')
+  .option('--config <path>', 'Config file path')
+  .option('--format <format>', 'Output format (json|table)', 'table')
   .action(async (opts: { config?: string; format?: string }) => {
     try {
       const engine = await initEngineForCommand(opts);
@@ -22,22 +22,22 @@ engineCommand
       if (opts.format === 'json') {
         printJson(status);
       } else {
-        printSuccess('FHIR Engine 运行中');
-        printInfo(`数据库类型: ${status.databaseType}`);
-        printInfo(`FHIR 版本: ${status.fhirVersions.join(', ')}`);
-        printInfo(`资源类型: ${status.resourceTypes.length} 个`);
-        printInfo(`启动时间: ${status.startedAt}`);
-        printInfo(`IG 动作: ${status.igAction}`);
+        printSuccess('FHIR Engine running');
+        printInfo(`Database type: ${status.databaseType}`);
+        printInfo(`FHIR version: ${status.fhirVersions.join(', ')}`);
+        printInfo(`Resource types: ${status.resourceTypes.length}`);
+        printInfo(`Started at: ${status.startedAt}`);
+        printInfo(`IG action: ${status.igAction}`);
 
         if (status.loadedPackages.length > 0) {
-          printInfo('已加载包:');
+          printInfo('Loaded packages:');
           for (const pkg of status.loadedPackages) {
             console.log(`    ${pkg}`);
           }
         }
 
         if (status.plugins.length > 0) {
-          printInfo(`插件: ${status.plugins.join(', ')}`);
+          printInfo(`Plugins: ${status.plugins.join(', ')}`);
         }
       }
 
@@ -49,25 +49,25 @@ engineCommand
 
 engineCommand
   .command('start')
-  .description('前台启动引擎 (Ctrl+C 停止)')
-  .option('--config <path>', '配置文件路径')
+  .description('Start engine in foreground (Ctrl+C to stop)')
+  .option('--config <path>', 'Config file path')
   .action(async (opts: { config?: string }) => {
     try {
       const engine = await initEngineForCommand(opts);
       const status = engine.status();
 
-      printSuccess('FHIR Engine 已启动');
-      printInfo(`数据库: ${status.databaseType}`);
-      printInfo(`资源类型: ${status.resourceTypes.length} 个`);
-      printInfo(`已加载包: ${status.loadedPackages.length} 个`);
-      printInfo('按 Ctrl+C 停止引擎...');
+      printSuccess('FHIR Engine started');
+      printInfo(`Database: ${status.databaseType}`);
+      printInfo(`Resource types: ${status.resourceTypes.length}`);
+      printInfo(`Loaded packages: ${status.loadedPackages.length}`);
+      printInfo('Press Ctrl+C to stop the engine...');
 
       // Keep process alive until SIGINT
       await new Promise<void>((resolve) => {
         const shutdown = async () => {
-          printInfo('\n正在停止引擎...');
+          printInfo('\nStopping engine...');
           await engine.stop();
-          printSuccess('引擎已停止');
+          printSuccess('Engine stopped');
           resolve();
         };
 
@@ -81,10 +81,10 @@ engineCommand
 
 engineCommand
   .command('stop')
-  .description('停止引擎（连接并发送停止信号）')
+  .description('Stop engine (connect and send stop signal)')
   .action(async () => {
     // In Phase 2, engine start runs in foreground — stop is done via Ctrl+C.
     // A background daemon mode with IPC-based stop is planned for Phase 3.
-    printInfo('引擎在前台模式运行时，请使用 Ctrl+C 停止。');
-    printInfo('后台守护进程模式将在 Phase 3 中实现。');
+    printInfo('When the engine is running in foreground mode, use Ctrl+C to stop.');
+    printInfo('Background daemon mode is planned for Phase 3.');
   });

@@ -40,6 +40,9 @@ examples/
 │   ├── observation.json          # Blood pressure Observation
 │   ├── condition.json            # Diabetes Condition
 │   └── bundle-transaction.json   # Transaction Bundle (Patient + Observation)
+├── configs/
+│   ├── fhir.config.sqlite.json   # SQLite configuration example
+│   └── fhir.config.postgres.json # PostgreSQL configuration example
 ├── fhirpath/
 │   └── expressions.json          # Common FHIRPath expressions with expected results
 ├── datasets/
@@ -163,9 +166,9 @@ When `fhir new` or `fhir ig install` runs, packages are resolved in this order:
 ```bash
 # Install an IG (updates config + downloads package)
 fhir ig install hl7.fhir.us.core@6.1.0
-# ✓ 已添加 hl7.fhir.us.core@6.1.0 到配置
-# ℹ 正在解析并下载 FHIR 包...
-# ✓ 已解析 hl7.fhir.us.core@6.1.0 (cache)
+# ✓ Added hl7.fhir.us.core@6.1.0 to config
+# ℹ Resolving and downloading FHIR packages...
+# ✓ Resolved hl7.fhir.us.core@6.1.0 (cache)
 
 # List loaded IGs
 fhir ig list

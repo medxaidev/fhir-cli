@@ -65,7 +65,7 @@ describe('printTable', () => {
   it('prints empty result message for empty array', () => {
     printTable([]);
     const output = stdoutSpy.mock.calls[0]![0] as string;
-    expect(output).toContain('空结果');
+    expect(output).toContain('No results');
   });
 
   it('prints header and rows', () => {

@@ -9,10 +9,10 @@ import { printJson } from '../core/output.js';
 import { CliError, ExitCode, handleError } from '../core/error-handler.js';
 
 export const pathCommand = new Command('path')
-  .description('FHIRPath 表达式求值')
-  .argument('<file>', 'JSON 资源文件路径')
-  .argument('<expression>', 'FHIRPath 表达式')
-  .option('--format <format>', '输出格式 (json|text|tree)', 'json')
+  .description('FHIRPath expression evaluation')
+  .argument('<file>', 'JSON resource file path')
+  .argument('<expression>', 'FHIRPath expression')
+  .option('--format <format>', 'Output format (json|text|tree)', 'json')
   .action(
     async (
       file: string,
@@ -27,10 +27,10 @@ export const pathCommand = new Command('path')
           resource = JSON.parse(readFileSync(filePath, 'utf-8'));
         } catch {
           throw new CliError(
-            `无法读取或解析文件: ${filePath}`,
+            `Failed to read or parse file: ${filePath}`,
             'INVALID_FILE',
             ExitCode.RUNTIME_ERROR,
-            '请确保文件存在且为有效的 JSON 格式。',
+            'Ensure the file exists and contains valid JSON.',
           );
         }
 

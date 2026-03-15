@@ -1,7 +1,7 @@
 /**
  * `fhir query <ResourceType[?params]>` — FHIR search.
  *
- * Uses engine.search() high-level API (fhir-engine v0.3.0+).
+ * Uses engine.search() high-level API (fhir-engine v0.4.0+).
  */
 import { Command } from 'commander';
 import { initEngineForCommand } from '../core/config-loader.js';
@@ -19,10 +19,10 @@ function parseQueryArg(arg: string): {
   const [resourceType, queryString] = arg.split('?');
   if (!resourceType) {
     throw new CliError(
-      `无效的查询: ${arg}`,
+      `Invalid query: ${arg}`,
       'INVALID_QUERY',
       ExitCode.RUNTIME_ERROR,
-      '格式: ResourceType 或 ResourceType?param=value',
+      'Format: ResourceType or ResourceType?param=value',
     );
   }
 
@@ -40,11 +40,11 @@ function parseQueryArg(arg: string): {
 }
 
 export const queryCommand = new Command('query')
-  .description('FHIR 搜索')
-  .argument('<query>', '查询表达式 (例: Patient?name=Smith)')
-  .option('--format <format>', '输出格式 (json|table)', 'json')
-  .option('--count <n>', '结果数量限制', '20')
-  .option('--config <path>', '配置文件路径')
+  .description('FHIR search')
+  .argument('<query>', 'Query expression (e.g. Patient?name=Smith)')
+  .option('--format <format>', 'Output format (json|table)', 'json')
+  .option('--count <n>', 'Result count limit', '20')
+  .option('--config <path>', 'Config file path')
   .action(
     async (
       query: string,

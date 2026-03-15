@@ -21,7 +21,7 @@ export function printTable(
   columns?: string[],
 ): void {
   if (rows.length === 0) {
-    process.stdout.write('(空结果)\n');
+    process.stdout.write('(No results)\n');
     return;
   }
 

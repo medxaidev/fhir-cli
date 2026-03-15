@@ -9,12 +9,12 @@ import { printJson, printSuccess, printTable } from '../core/output.js';
 import { CliError, ExitCode, handleError } from '../core/error-handler.js';
 
 export const resourceCommand = new Command('resource')
-  .description('FHIR 资源 CRUD 操作');
+  .description('FHIR resource CRUD operations');
 
 resourceCommand
   .command('create <file>')
-  .description('从 JSON 文件创建资源')
-  .option('--config <path>', '配置文件路径')
+  .description('Create resource from JSON file')
+  .option('--config <path>', 'Config file path')
   .action(async (file: string, opts: { config?: string }) => {
     try {
       const engine = await initEngineForCommand(opts);
@@ -24,15 +24,15 @@ resourceCommand
       const resourceType = content.resourceType;
       if (!resourceType) {
         throw new CliError(
-          'JSON 文件缺少 resourceType 字段',
+          'JSON file is missing the resourceType field',
           'INVALID_RESOURCE',
           ExitCode.VALIDATION_FAILED,
-          '请确保 JSON 文件包含有效的 FHIR resourceType。',
+          'Ensure the JSON file contains a valid FHIR resourceType.',
         );
       }
 
       const result = await engine.persistence.createResource(resourceType, content);
-      printSuccess(`${resourceType}/${result.id} 已创建 (versionId: ${result.meta?.versionId ?? 'N/A'})`);
+      printSuccess(`${resourceType}/${result.id} created (versionId: ${result.meta?.versionId ?? 'N/A'})`);
       printJson(result);
       await engine.stop();
     } catch (error) {
@@ -42,19 +42,19 @@ resourceCommand
 
 resourceCommand
   .command('get <reference>')
-  .description('读取资源 (格式: ResourceType/id)')
-  .option('--config <path>', '配置文件路径')
-  .option('--format <format>', '输出格式 (json|text)', 'json')
+  .description('Read resource (format: ResourceType/id)')
+  .option('--config <path>', 'Config file path')
+  .option('--format <format>', 'Output format (json|text)', 'json')
   .action(async (reference: string, opts: { config?: string; format?: string }) => {
     try {
       const engine = await initEngineForCommand(opts);
       const [resourceType, id] = reference.split('/');
       if (!resourceType || !id) {
         throw new CliError(
-          `无效的资源引用: ${reference}`,
+          `Invalid resource reference: ${reference}`,
           'INVALID_REFERENCE',
           ExitCode.RUNTIME_ERROR,
-          '格式: ResourceType/id，例如: Patient/123',
+          'Format: ResourceType/id, e.g. Patient/123',
         );
       }
 
@@ -68,8 +68,8 @@ resourceCommand
 
 resourceCommand
   .command('update <file>')
-  .description('更新资源 (id 在文件中)')
-  .option('--config <path>', '配置文件路径')
+  .description('Update resource (id must be in file)')
+  .option('--config <path>', 'Config file path')
   .action(async (file: string, opts: { config?: string }) => {
     try {
       const engine = await initEngineForCommand(opts);
@@ -80,14 +80,14 @@ resourceCommand
       const id = content.id;
       if (!resourceType || !id) {
         throw new CliError(
-          'JSON 文件缺少 resourceType 或 id 字段',
+          'JSON file is missing resourceType or id field',
           'INVALID_RESOURCE',
           ExitCode.VALIDATION_FAILED,
         );
       }
 
       const result = await engine.persistence.updateResource(resourceType, content);
-      printSuccess(`${resourceType}/${id} 已更新 (versionId: ${result.meta?.versionId ?? 'N/A'})`);
+      printSuccess(`${resourceType}/${id} updated (versionId: ${result.meta?.versionId ?? 'N/A'})`);
       printJson(result);
       await engine.stop();
     } catch (error) {
@@ -97,23 +97,23 @@ resourceCommand
 
 resourceCommand
   .command('delete <reference>')
-  .description('删除资源 (格式: ResourceType/id)')
-  .option('--config <path>', '配置文件路径')
+  .description('Delete resource (format: ResourceType/id)')
+  .option('--config <path>', 'Config file path')
   .action(async (reference: string, opts: { config?: string }) => {
     try {
       const engine = await initEngineForCommand(opts);
       const [resourceType, id] = reference.split('/');
       if (!resourceType || !id) {
         throw new CliError(
-          `无效的资源引用: ${reference}`,
+          `Invalid resource reference: ${reference}`,
           'INVALID_REFERENCE',
           ExitCode.RUNTIME_ERROR,
-          '格式: ResourceType/id，例如: Patient/123',
+          'Format: ResourceType/id, e.g. Patient/123',
         );
       }
 
       await engine.persistence.deleteResource(resourceType, id);
-      printSuccess(`${resourceType}/${id} 已删除`);
+      printSuccess(`${resourceType}/${id} deleted`);
       await engine.stop();
     } catch (error) {
       handleError(error);
@@ -122,19 +122,19 @@ resourceCommand
 
 resourceCommand
   .command('history <reference>')
-  .description('查看资源版本历史 (格式: ResourceType/id)')
-  .option('--config <path>', '配置文件路径')
-  .option('--format <format>', '输出格式 (json|table)', 'json')
+  .description('View resource version history (format: ResourceType/id)')
+  .option('--config <path>', 'Config file path')
+  .option('--format <format>', 'Output format (json|table)', 'json')
   .action(async (reference: string, opts: { config?: string; format?: string }) => {
     try {
       const engine = await initEngineForCommand(opts);
       const [resourceType, id] = reference.split('/');
       if (!resourceType || !id) {
         throw new CliError(
-          `无效的资源引用: ${reference}`,
+          `Invalid resource reference: ${reference}`,
           'INVALID_REFERENCE',
           ExitCode.RUNTIME_ERROR,
-          '格式: ResourceType/id，例如: Patient/123',
+          'Format: ResourceType/id, e.g. Patient/123',
         );
       }
 
@@ -146,7 +146,7 @@ resourceCommand
             (entry) => ({
               versionId: entry.versionId,
               lastUpdated: entry.lastUpdated,
-              deleted: entry.deleted ? '是' : '否',
+              deleted: entry.deleted ? 'Yes' : 'No',
             }),
           ),
         );

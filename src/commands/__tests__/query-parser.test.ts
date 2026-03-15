@@ -14,10 +14,10 @@ function parseQueryArg(arg: string): {
   const [resourceType, queryString] = arg.split('?');
   if (!resourceType) {
     throw new CliError(
-      `无效的查询: ${arg}`,
+      `Invalid query: ${arg}`,
       'INVALID_QUERY',
       1,
-      '格式: ResourceType 或 ResourceType?param=value',
+      'Format: ResourceType or ResourceType?param=value',
     );
   }
 

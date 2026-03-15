@@ -78,7 +78,7 @@ describe('handleError', () => {
     const err = new CliError('no hint', 'CODE');
     handleError(err);
     const output = stderrSpy.mock.calls[0]![0] as string;
-    expect(output).not.toContain('提示');
+    expect(output).not.toContain('Hint');
     expect(exitSpy).toHaveBeenCalledWith(ExitCode.RUNTIME_ERROR);
   });
 

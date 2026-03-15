@@ -9,11 +9,11 @@ import { printJson, printSuccess, printError } from '../core/output.js';
 import { CliError, ExitCode, handleError } from '../core/error-handler.js';
 
 export const validateCommand = new Command('validate')
-  .description('验证 FHIR 资源')
-  .argument('<file>', 'JSON 资源文件路径')
+  .description('Validate a FHIR resource')
+  .argument('<file>', 'JSON resource file path')
   .option('--profile <url>', 'Profile URL')
-  .option('--format <format>', '输出格式 (json|text)', 'text')
-  .option('--config <path>', '配置文件路径')
+  .option('--format <format>', 'Output format (json|text)', 'text')
+  .option('--config <path>', 'Config file path')
   .action(
     async (
       file: string,
@@ -28,10 +28,10 @@ export const validateCommand = new Command('validate')
           resource = JSON.parse(readFileSync(filePath, 'utf-8'));
         } catch {
           throw new CliError(
-            `无法读取或解析文件: ${filePath}`,
+            `Failed to read or parse file: ${filePath}`,
             'INVALID_FILE',
             ExitCode.RUNTIME_ERROR,
-            '请确保文件存在且为有效的 JSON 格式。',
+            'Ensure the file exists and contains valid JSON.',
           );
         }
 
@@ -45,10 +45,10 @@ export const validateCommand = new Command('validate')
 
         if (!profileUrl) {
           throw new CliError(
-            '无法确定验证 Profile：资源缺少 resourceType，且未指定 --profile',
+            'Cannot determine validation profile: resource is missing resourceType and --profile was not specified',
             'MISSING_PROFILE',
             ExitCode.VALIDATION_FAILED,
-            '请使用 --profile <url> 指定验证 Profile，或确保 JSON 文件包含 resourceType。',
+            'Use --profile <url> to specify a validation profile, or ensure the JSON file contains resourceType.',
           );
         }
 
@@ -61,16 +61,16 @@ export const validateCommand = new Command('validate')
           // Text format output
           const issues = ((result as unknown) as { issues?: ReadonlyArray<{ severity: string; message: string; path?: string }> }).issues ?? [];
           if (issues.length === 0) {
-            printSuccess('资源验证通过');
+            printSuccess('Resource validation passed');
           } else {
             const errors = issues.filter((i) => i.severity === 'error');
             const warnings = issues.filter((i) => i.severity === 'warning');
             const infos = issues.filter((i) => i.severity === 'information');
 
             if (errors.length > 0) {
-              printError(`验证失败（${issues.length} 个问题）`);
+              printError(`Validation failed (${issues.length} issue(s))`);
             } else {
-              printSuccess(`验证通过（${warnings.length} 个警告, ${infos.length} 个信息）`);
+              printSuccess(`Validation passed (${warnings.length} warning(s), ${infos.length} info(s))`);
             }
 
             for (const issue of issues) {

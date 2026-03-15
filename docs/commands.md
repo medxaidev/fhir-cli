@@ -6,16 +6,16 @@
 fhir <command> [options]
 ```
 
-| Command | Description |
-|---|---|
-| `fhir new [name]` | Create a new FHIR project |
-| `fhir resource <subcommand>` | Resource CRUD operations |
-| `fhir query <expression>` | FHIR search |
-| `fhir validate <file>` | Validate a FHIR resource |
-| `fhir path <file> <expr>` | FHIRPath expression evaluation |
-| `fhir ig <subcommand>` | IG management |
-| `fhir engine <subcommand>` | Engine lifecycle |
-| `fhir doctor` | Environment diagnostics |
+| Command                      | Description                    |
+| ---------------------------- | ------------------------------ |
+| `fhir new [name]`            | Create a new FHIR project      |
+| `fhir resource <subcommand>` | Resource CRUD operations       |
+| `fhir query <expression>`    | FHIR search                    |
+| `fhir validate <file>`       | Validate a FHIR resource       |
+| `fhir path <file> <expr>`    | FHIRPath expression evaluation |
+| `fhir ig <subcommand>`       | IG management                  |
+| `fhir engine <subcommand>`   | Engine lifecycle               |
+| `fhir doctor`                | Environment diagnostics        |
 
 ---
 
@@ -28,9 +28,10 @@ fhir new my-project
 ```
 
 **Prompts:**
+
 - Project name
 - FHIR version (R4)
-- Database type (SQLite)
+- Database type (SQLite or PostgreSQL)
 - Include US Core IG
 - Generate example resources
 
@@ -47,6 +48,7 @@ fhir resource create examples/resources/patient.json
 ```
 
 **Options:**
+
 - `--config <path>` — Config file path
 
 ### `fhir resource get <Type/id>`
@@ -58,6 +60,7 @@ fhir resource get Patient/abc-123
 ```
 
 **Options:**
+
 - `--config <path>` — Config file path
 - `--format <format>` — Output format: `json` | `text` (default: `json`)
 
@@ -70,6 +73,7 @@ fhir resource update patient-updated.json
 ```
 
 **Options:**
+
 - `--config <path>` — Config file path
 
 ### `fhir resource delete <Type/id>`
@@ -81,6 +85,7 @@ fhir resource delete Patient/abc-123
 ```
 
 **Options:**
+
 - `--config <path>` — Config file path
 
 ### `fhir resource history <Type/id>`
@@ -93,6 +98,7 @@ fhir resource history Patient/abc-123 --format table
 ```
 
 **Options:**
+
 - `--config <path>` — Config file path
 - `--format <format>` — Output format: `json` | `table` (default: `json`)
 
@@ -110,9 +116,11 @@ fhir query "Observation?code=85354-9" --format table
 ```
 
 **Arguments:**
+
 - `<expression>` — Query in format `ResourceType` or `ResourceType?param=value&...`
 
 **Options:**
+
 - `--format <format>` — Output format: `json` | `table` (default: `json`)
 - `--count <n>` — Result limit (default: `20`)
 - `--config <path>` — Config file path
@@ -129,11 +137,13 @@ fhir validate examples/resources/observation.json --profile http://hl7.org/fhir/
 ```
 
 **Options:**
+
 - `--profile <url>` — StructureDefinition URL (auto-derived from `resourceType` if omitted)
 - `--format <format>` — Output format: `json` | `text` (default: `text`)
 - `--config <path>` — Config file path
 
 **Exit codes:**
+
 - `0` — Valid
 - `2` — Validation issues found
 
@@ -158,6 +168,7 @@ fhir path examples/resources/observation.json "component.code.coding.display"
 ```
 
 **Options:**
+
 - `--format <format>` — Output format: `json` | `text` | `tree` (default: `json`)
 
 ---
@@ -174,6 +185,7 @@ fhir ig list --format json
 ```
 
 **Options:**
+
 - `--format <format>` — Output format: `json` | `table` (default: `table`)
 - `--config <path>` — Config file path
 
@@ -187,6 +199,7 @@ fhir ig install hl7.fhir.us.core
 ```
 
 **Options:**
+
 - `--config <path>` — Config file path
 
 ### `fhir ig remove <name>`
@@ -198,6 +211,7 @@ fhir ig remove hl7.fhir.us.core
 ```
 
 **Options:**
+
 - `--config <path>` — Config file path
 
 ### `fhir ig info <name>`
@@ -209,6 +223,7 @@ fhir ig info hl7.fhir.r4.core
 ```
 
 **Options:**
+
 - `--format <format>` — Output format: `json` | `table` (default: `table`)
 - `--config <path>` — Config file path
 
@@ -234,6 +249,7 @@ fhir engine status --format json
 ```
 
 **Options:**
+
 - `--format <format>` — Output format: `json` | `table` (default: `table`)
 - `--config <path>` — Config file path
 
@@ -246,6 +262,7 @@ fhir engine start
 ```
 
 **Options:**
+
 - `--config <path>` — Config file path
 
 ### `fhir engine stop`
@@ -263,6 +280,7 @@ fhir doctor
 ```
 
 Checks:
+
 - Node.js version (>= 18)
 - Configuration file
 - Engine initialization
@@ -271,6 +289,7 @@ Checks:
 - Resource types
 
 **Options:**
+
 - `--config <path>` — Config file path
 
 ---
@@ -279,18 +298,18 @@ Checks:
 
 All commands support:
 
-| Option | Description |
-|---|---|
-| `--help` | Show help for command |
-| `--version` | Show version |
+| Option      | Description           |
+| ----------- | --------------------- |
+| `--help`    | Show help for command |
+| `--version` | Show version          |
 
 ## Exit Codes
 
-| Code | Meaning |
-|---|---|
-| `0` | Success |
-| `1` | Runtime error |
-| `2` | Validation failed |
-| `3` | Resource not found |
-| `4` | Configuration error |
-| `5` | IG error |
+| Code | Meaning             |
+| ---- | ------------------- |
+| `0`  | Success             |
+| `1`  | Runtime error       |
+| `2`  | Validation failed   |
+| `3`  | Resource not found  |
+| `4`  | Configuration error |
+| `5`  | IG error            |

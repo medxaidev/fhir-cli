@@ -20,18 +20,19 @@ describe('createEngineForCli', () => {
     }
   });
 
-  it('throws CliError with hint for PostgreSQL config', async () => {
+  it('throws CliError with connection hint for unreachable PostgreSQL', async () => {
     try {
       await createEngineForCli({
-        database: { type: 'postgres' as any, url: 'postgresql://localhost/test' },
+        database: { type: 'postgres' as any, url: 'postgresql://user:pass@127.0.0.1:59999/fhir_test' },
         packages: { path: './fhir-packages' },
         igs: [],
       } as any);
     } catch (e) {
       expect(e).toBeInstanceOf(CliError);
       const err = e as CliError;
-      // May be UNSUPPORTED_DATABASE or ENGINE_INIT_FAILED depending on how engine throws
       expect(err.hint).toBeDefined();
+      // Should be a connection or engine error, not "unsupported"
+      expect(err.code).not.toBe('UNSUPPORTED_DATABASE');
     }
   });
 

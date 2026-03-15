@@ -18,7 +18,7 @@ The developer toolkit for building FHIR applications.
 - **Engine lifecycle** — Start, status, and stop the FHIR engine
 - **Diagnostics** — `fhir doctor` checks your environment
 
-Built on [fhir-engine](https://github.com/nichefish/fhir-engine) with embedded SQLite — no external server required.
+Built on [fhir-engine](https://github.com/nichefish/fhir-engine) with **SQLite** (embedded, zero-config) and **PostgreSQL** (production-grade) support.
 
 ## Quick Start
 
@@ -273,8 +273,9 @@ fhir path examples/resources/patient.json "name.given"
 
 ## Tech Stack
 
-- **Runtime**: fhir-engine ^0.4.0 (embedded FHIR kernel with package resolution)
-- **Database**: SQLite (via better-sqlite3)
+- **Runtime**: fhir-engine ^0.4.2 (embedded FHIR kernel with package resolution)
+- **Database**: SQLite (via better-sqlite3) and PostgreSQL (via pg)
+- **Persistence**: fhir-persistence ^0.3.0 (dual-database, lookup table search)
 - **Language**: TypeScript 5.9
 - **CLI**: Commander ^12
 - **Testing**: Vitest ^4

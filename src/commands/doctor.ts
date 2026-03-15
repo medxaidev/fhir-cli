@@ -7,8 +7,8 @@ import { printSuccess, printError, printWarning } from '../core/output.js';
 import { CliError, ExitCode } from '../core/error-handler.js';
 
 export const doctorCommand = new Command('doctor')
-  .description('环境诊断')
-  .option('--config <path>', '配置文件路径')
+  .description('Environment diagnostics')
+  .option('--config <path>', 'Config file path')
   .action(async (opts: { config?: string }) => {
     let hasErrors = false;
 
@@ -18,7 +18,7 @@ export const doctorCommand = new Command('doctor')
     if (major >= 18) {
       printSuccess(`Node.js ${nodeVersion}`);
     } else {
-      printError(`Node.js ${nodeVersion} — 需要 >=18.0.0`);
+      printError(`Node.js ${nodeVersion} — requires >=18.0.0`);
       hasErrors = true;
     }
 
@@ -28,27 +28,27 @@ export const doctorCommand = new Command('doctor')
 
       // 3. Engine status
       const status = engine.status();
-      printSuccess(`FHIR Engine 已启动`);
-      printSuccess(`数据库: ${status.databaseType}`);
-      printSuccess(`FHIR 版本: ${status.fhirVersions.join(', ')}`);
-      printSuccess(`已加载包: ${status.loadedPackages.length} 个`);
+      printSuccess(`FHIR Engine started`);
+      printSuccess(`Database: ${status.databaseType}`);
+      printSuccess(`FHIR version: ${status.fhirVersions.join(', ')}`);
+      printSuccess(`Loaded packages: ${status.loadedPackages.length}`);
       for (const pkg of status.loadedPackages) {
         console.log(`    ${pkg}`);
       }
-      printSuccess(`资源类型: ${status.resourceTypes.length} 个`);
-      printSuccess(`IG 动作: ${status.igAction}`);
+      printSuccess(`Resource types: ${status.resourceTypes.length}`);
+      printSuccess(`IG action: ${status.igAction}`);
 
       if (status.plugins.length > 0) {
-        printSuccess(`插件: ${status.plugins.join(', ')}`);
+        printSuccess(`Plugins: ${status.plugins.join(', ')}`);
       }
 
       await engine.stop();
     } catch (error) {
       if (error instanceof CliError && error.code === 'CONFIG_NOT_FOUND') {
-        printWarning('未找到 fhir.config.json — 请在 FHIR 项目目录中运行，或使用 fhir new 创建新项目。');
+        printWarning('fhir.config.json not found — run inside a FHIR project directory, or create one with fhir new.');
       } else {
         const message = error instanceof Error ? error.message : String(error);
-        printError(`引擎启动失败: ${message}`);
+        printError(`Engine failed to start: ${message}`);
         hasErrors = true;
       }
     }

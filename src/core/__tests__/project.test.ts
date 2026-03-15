@@ -62,7 +62,7 @@ describe('createProject', () => {
     expect(existsSync(pkgPath)).toBe(true);
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
     expect(pkg.name).toBe('test-project');
-    expect(pkg.dependencies['fhir-engine']).toBe('^0.4.0');
+    expect(pkg.dependencies['fhir-engine']).toBe('^0.5.1');
   });
 
   it('includes US Core IG when usCore is true', async () => {

@@ -36,8 +36,8 @@ export function handleError(error: unknown): never {
   if (error instanceof CliError) {
     process.stderr.write(
       `\n✗ ${error.message}\n` +
-        `  错误码: ${error.code}\n` +
-        (error.hint ? `  提示: ${error.hint}\n` : ''),
+      `  Code: ${error.code}\n` +
+      (error.hint ? `  Hint: ${error.hint}\n` : ''),
     );
     process.exit(error.exitCode);
   }
@@ -49,6 +49,6 @@ export function handleError(error: unknown): never {
   }
 
   // Unknown error shape
-  process.stderr.write(`\n✗ 未知错误: ${String(error)}\n`);
+  process.stderr.write(`\n✗ Unknown error: ${String(error)}\n`);
   process.exit(ExitCode.RUNTIME_ERROR);
 }

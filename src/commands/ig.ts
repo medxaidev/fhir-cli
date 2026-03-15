@@ -13,13 +13,13 @@ import { printJson, printTable, printSuccess, printInfo, printWarning } from '..
 import { CliError, ExitCode, handleError } from '../core/error-handler.js';
 
 export const igCommand = new Command('ig')
-  .description('FHIR IG 管理');
+  .description('FHIR IG management');
 
 igCommand
   .command('list')
-  .description('列出已加载的 IG')
-  .option('--config <path>', '配置文件路径')
-  .option('--format <format>', '输出格式 (json|table)', 'table')
+  .description('List loaded IGs')
+  .option('--config <path>', 'Config file path')
+  .option('--format <format>', 'Output format (json|table)', 'table')
   .action(async (opts: { config?: string; format?: string }) => {
     try {
       const engine = await initEngineForCommand(opts);
@@ -37,10 +37,10 @@ igCommand
             })),
           );
         } else {
-          console.log('(未加载任何 FHIR 包)');
+          console.log('(No FHIR packages loaded)');
         }
         console.log(
-          `\n总计: ${stats.structureDefinitionCount} SD, ` +
+          `\nTotal: ${stats.structureDefinitionCount} SD, ` +
           `${stats.searchParameterCount} SP, ` +
           `${stats.valueSetCount} VS, ` +
           `${stats.codeSystemCount} CS`,
@@ -55,14 +55,14 @@ igCommand
 
 igCommand
   .command('load <path>')
-  .description('加载本地 IG 目录')
-  .option('--config <path>', '配置文件路径')
+  .description('Load local IG directory')
+  .option('--config <path>', 'Config file path')
   .action(async (igPath: string, opts: { config?: string }) => {
     try {
       const engine = await initEngineForCommand(opts);
       // TODO: implement local IG loading through engine
-      printSuccess(`IG 路径已记录: ${igPath}`);
-      console.log('注意: 本地 IG 加载将在引擎重启时生效。');
+      printSuccess(`IG path recorded: ${igPath}`);
+      console.log('Note: Local IG will take effect after engine restart.');
       await engine.stop();
     } catch (error) {
       handleError(error);
@@ -88,20 +88,20 @@ function readConfig(opts: { config?: string }): {
 
   if (!configPath) {
     throw new CliError(
-      '未找到 fhir.config.json',
+      'fhir.config.json not found',
       'CONFIG_NOT_FOUND',
       ExitCode.CONFIG_ERROR,
-      '请在 FHIR 项目目录中运行，或使用 fhir new 创建新项目。',
+      'Run inside a FHIR project directory, or create one with fhir new.',
     );
   }
 
   // Only support JSON config for write operations
   if (!configPath.endsWith('.json')) {
     throw new CliError(
-      'ig install/remove 仅支持 fhir.config.json 格式',
+      'ig install/remove only supports fhir.config.json format',
       'UNSUPPORTED_CONFIG_FORMAT',
       ExitCode.CONFIG_ERROR,
-      '请将配置转换为 fhir.config.json 格式后重试。',
+      'Please convert your config to fhir.config.json format and retry.',
     );
   }
 
@@ -111,8 +111,8 @@ function readConfig(opts: { config?: string }): {
 
 igCommand
   .command('install <name>')
-  .description('将 IG 添加到项目配置 (格式: name 或 name@version)')
-  .option('--config <path>', '配置文件路径')
+  .description('Add IG to project config (format: name or name@version)')
+  .option('--config <path>', 'Config file path')
   .action(async (nameArg: string, opts: { config?: string }) => {
     try {
       const { configPath, config } = readConfig(opts);
@@ -134,9 +134,9 @@ igCommand
       if (existing) {
         if (version !== 'latest') {
           existing.version = version;
-          printInfo(`已更新 ${name} 版本为 ${version}`);
+          printInfo(`Updated ${name} version to ${version}`);
         } else {
-          printWarning(`${name} 已在配置中`);
+          printWarning(`${name} is already in config`);
           return;
         }
       } else {
@@ -145,14 +145,14 @@ igCommand
           entry.version = version;
         }
         igs.push(entry);
-        printSuccess(`已添加 ${name}${version !== 'latest' ? `@${version}` : ''} 到配置`);
+        printSuccess(`Added ${name}${version !== 'latest' ? `@${version}` : ''} to config`);
       }
 
       writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
-      printInfo(`配置已更新: ${configPath}`);
+      printInfo(`Config updated: ${configPath}`);
 
       // Resolve packages: download/link into fhir-packages/
-      printInfo('正在解析并下载 FHIR 包...');
+      printInfo('Resolving and downloading FHIR packages...');
       const engineConfig = await loadFhirConfig(configPath);
       const resolveResult = await resolvePackages(engineConfig, {
         packages: [{ name, version: version !== 'latest' ? version : undefined }],
@@ -160,16 +160,16 @@ igCommand
 
       if (resolveResult.success) {
         for (const pkg of resolveResult.packages) {
-          printSuccess(`已解析 ${pkg.name}@${pkg.version} (${pkg.source})`);
+          printSuccess(`Resolved ${pkg.name}@${pkg.version} (${pkg.source})`);
         }
       } else {
         for (const err of resolveResult.errors) {
           printWarning(`${err.name}: ${err.error}`);
         }
-        printWarning('部分包解析失败，请检查网络连接或手动放置包到 fhir-packages/ 目录。');
+        printWarning('Some packages failed to resolve. Check your network or manually place packages in fhir-packages/.');
       }
 
-      printInfo('请重启引擎以加载新的 IG。');
+      printInfo('Restart the engine to load the new IG.');
     } catch (error) {
       handleError(error);
     }
@@ -177,14 +177,14 @@ igCommand
 
 igCommand
   .command('remove <name>')
-  .description('从项目配置中移除 IG')
-  .option('--config <path>', '配置文件路径')
+  .description('Remove IG from project config')
+  .option('--config <path>', 'Config file path')
   .action(async (name: string, opts: { config?: string }) => {
     try {
       const { configPath, config } = readConfig(opts);
 
       if (!Array.isArray(config.igs)) {
-        printWarning(`配置中没有 IG 列表`);
+        printWarning(`No IG list in config`);
         return;
       }
 
@@ -193,18 +193,18 @@ igCommand
 
       if (idx === -1) {
         throw new CliError(
-          `IG "${name}" 未在配置中找到`,
+          `IG "${name}" not found in config`,
           'IG_NOT_FOUND',
           ExitCode.NOT_FOUND,
-          `已配置的 IG: ${igs.map((ig) => ig.name).join(', ') || '(无)'}`,
+          `Configured IGs: ${igs.map((ig) => ig.name).join(', ') || '(none)'}`,
         );
       }
 
       igs.splice(idx, 1);
       writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
-      printSuccess(`已从配置中移除 ${name}`);
-      printInfo(`配置已更新: ${configPath}`);
-      printInfo('请重启引擎以应用更改。');
+      printSuccess(`Removed ${name} from config`);
+      printInfo(`Config updated: ${configPath}`);
+      printInfo('Restart the engine to apply changes.');
     } catch (error) {
       handleError(error);
     }
@@ -212,9 +212,9 @@ igCommand
 
 igCommand
   .command('info <name>')
-  .description('显示 IG 详情')
-  .option('--config <path>', '配置文件路径')
-  .option('--format <format>', '输出格式 (json|table)', 'table')
+  .description('Show IG details')
+  .option('--config <path>', 'Config file path')
+  .option('--format <format>', 'Output format (json|table)', 'table')
   .action(async (name: string, opts: { config?: string; format?: string }) => {
     try {
       const engine = await initEngineForCommand(opts);
@@ -226,10 +226,10 @@ igCommand
 
       if (!pkg) {
         throw new CliError(
-          `IG "${name}" 未加载`,
+          `IG "${name}" is not loaded`,
           'IG_NOT_LOADED',
           ExitCode.NOT_FOUND,
-          `已加载的包: ${packages.map((p) => p.name).join(', ') || '(无)'}`,
+          `Loaded packages: ${packages.map((p) => p.name).join(', ') || '(none)'}`,
         );
       }
 
@@ -238,8 +238,8 @@ igCommand
       if (opts.format === 'json') {
         printJson({ package: pkg, statistics: stats });
       } else {
-        printInfo(`包名: ${pkg.name}`);
-        printInfo(`版本: ${pkg.version}`);
+        printInfo(`Package: ${pkg.name}`);
+        printInfo(`Version: ${pkg.version}`);
         printInfo(`StructureDefinition: ${stats.structureDefinitionCount}`);
         printInfo(`SearchParameter: ${stats.searchParameterCount}`);
         printInfo(`ValueSet: ${stats.valueSetCount}`);

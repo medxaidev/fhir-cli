@@ -5,6 +5,49 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-03-16
+
+### Fixed
+
+- **PostgreSQL schema migration failures** — Fixed multiple PostgreSQL-specific SQL compatibility issues:
+  - Dynamic `pg` package import in fhir-engine (ESM compatibility)
+  - SQLite-specific `datetime('now')` replaced with `CURRENT_TIMESTAMP` for PostgreSQL
+  - SQLite `AUTOINCREMENT` replaced with PostgreSQL `SERIAL` for auto-increment columns
+  - SQLite `INSERT OR REPLACE` replaced with PostgreSQL `INSERT ... ON CONFLICT` for upsert operations
+  - Missing `CREATE EXTENSION pg_trgm` and `btree_gin` in migration DDL path
+  - Ambiguous `"id"` column reference in lookup table EXISTS subqueries causing `text = integer` type mismatch
+- **PostgreSQL GIN index creation** — GIN indexes on TEXT columns now include required `pg_trgm` extension and operator class
+- **Lookup table search on PostgreSQL** — `Patient?name=Smith` and similar queries now work correctly with qualified column references
+
+### Changed
+
+- Upgraded fhir-engine dependency from ^0.5.0 to ^0.5.1 (includes fhir-persistence ^0.5.0)
+- `fhir new` generated `package.json` references fhir-engine ^0.5.1
+- PostgreSQL is now fully supported with all CRUD operations and search queries working correctly
+
+## [0.4.0] - 2026-03-15
+
+### Added
+
+- **PostgreSQL support** — fhir-cli now supports both SQLite and PostgreSQL databases
+  - `fhir new` wizard offers SQLite or PostgreSQL database selection
+  - PostgreSQL connection error handling with actionable hints (connection refused, auth failed)
+  - PostgreSQL example config at `examples/configs/fhir.config.postgres.json`
+  - PostgreSQL integration test suite (`integration-postgres.test.ts`)
+- **Example config files** — `examples/configs/` with SQLite and PostgreSQL config templates
+- **Lookup table search** — `Patient?name=Smith`, `Patient?address-city=...`, `Patient?email=...` now work correctly
+
+### Changed
+
+- Upgraded fhir-engine dependency from ^0.4.1 to ^0.4.2 (includes fhir-persistence ^0.3.0)
+- `fhir new` generated `package.json` references fhir-engine ^0.4.2
+- Engine factory no longer rejects PostgreSQL config — proper PG error handling added
+- Updated all documentation for dual-database support
+
+### Fixed
+
+- **Lookup table search returned empty results** — `Patient?name=Smith` and similar queries using HumanName, Address, ContactPoint, Identifier lookup tables always returned empty results due to ambiguous `"id"` column reference in EXISTS subqueries (fixed in fhir-persistence ^0.3.0)
+
 ## [0.3.0] - 2026-03-15
 
 ### Added

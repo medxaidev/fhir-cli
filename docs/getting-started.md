@@ -28,7 +28,7 @@ The interactive wizard will guide you through:
 
 1. Project name
 2. FHIR version (R4)
-3. Database type (SQLite)
+3. Database type (SQLite or PostgreSQL)
 4. Whether to include US Core IG
 5. Whether to generate example resources
 
@@ -87,6 +87,8 @@ fhir doctor
 
 The `fhir.config.json` file controls the engine:
 
+### SQLite (Default)
+
 ```json
 {
   "database": {
@@ -98,6 +100,26 @@ The `fhir.config.json` file controls the engine:
   }
 }
 ```
+
+### PostgreSQL
+
+```json
+{
+  "database": {
+    "type": "postgres",
+    "url": "postgresql://user:pass@localhost:5432/fhir"
+  },
+  "packages": {
+    "path": "./fhir-packages"
+  }
+}
+```
+
+> **Note:** PostgreSQL requires a running server. Create the database before starting the engine:
+>
+> ```bash
+> createdb fhir
+> ```
 
 ## Next Steps
 
