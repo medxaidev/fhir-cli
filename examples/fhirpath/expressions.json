@@ -1,0 +1,45 @@
+{
+  "description": "Common FHIRPath expressions with expected results for testing",
+  "cases": [
+    {
+      "file": "resources/patient.json",
+      "expression": "name.family",
+      "expected": ["Smith"]
+    },
+    {
+      "file": "resources/patient.json",
+      "expression": "name.given",
+      "expected": ["John", "Michael"]
+    },
+    {
+      "file": "resources/patient.json",
+      "expression": "gender = 'male'",
+      "expected": [true]
+    },
+    {
+      "file": "resources/patient.json",
+      "expression": "resourceType",
+      "expected": ["Patient"]
+    },
+    {
+      "file": "resources/patient.json",
+      "expression": "telecom.where(system = 'email').value",
+      "expected": ["john.smith@example.com"]
+    },
+    {
+      "file": "resources/observation.json",
+      "expression": "component.code.coding.display",
+      "expected": ["Systolic blood pressure", "Diastolic blood pressure"]
+    },
+    {
+      "file": "resources/observation.json",
+      "expression": "status",
+      "expected": ["final"]
+    },
+    {
+      "file": "resources/patient.json",
+      "expression": "telecom.count()",
+      "expected": [2]
+    }
+  ]
+}

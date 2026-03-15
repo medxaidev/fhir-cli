@@ -1,0 +1,6 @@
+{
+  "resourceType": "Patient",
+  "gender": "not-a-valid-gender",
+  "birthDate": "not-a-date",
+  "name": "should-be-array"
+}

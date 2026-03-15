@@ -1,0 +1,38 @@
+[
+  {
+    "resourceType": "Observation",
+    "status": "final",
+    "code": {
+      "coding": [{ "system": "http://loinc.org", "code": "29463-7", "display": "Body weight" }]
+    },
+    "subject": { "reference": "Patient/1" },
+    "valueQuantity": { "value": 75, "unit": "kg", "system": "http://unitsofmeasure.org", "code": "kg" }
+  },
+  {
+    "resourceType": "Observation",
+    "status": "final",
+    "code": {
+      "coding": [{ "system": "http://loinc.org", "code": "8302-2", "display": "Body height" }]
+    },
+    "subject": { "reference": "Patient/1" },
+    "valueQuantity": { "value": 178, "unit": "cm", "system": "http://unitsofmeasure.org", "code": "cm" }
+  },
+  {
+    "resourceType": "Observation",
+    "status": "final",
+    "code": {
+      "coding": [{ "system": "http://loinc.org", "code": "85354-9", "display": "Blood pressure panel" }]
+    },
+    "subject": { "reference": "Patient/2" },
+    "component": [
+      {
+        "code": { "coding": [{ "system": "http://loinc.org", "code": "8480-6", "display": "Systolic blood pressure" }] },
+        "valueQuantity": { "value": 118, "unit": "mmHg", "system": "http://unitsofmeasure.org", "code": "mm[Hg]" }
+      },
+      {
+        "code": { "coding": [{ "system": "http://loinc.org", "code": "8462-4", "display": "Diastolic blood pressure" }] },
+        "valueQuantity": { "value": 76, "unit": "mmHg", "system": "http://unitsofmeasure.org", "code": "mm[Hg]" }
+      }
+    ]
+  }
+]

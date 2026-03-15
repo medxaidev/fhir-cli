@@ -1,0 +1,20 @@
+[
+  {
+    "resourceType": "Patient",
+    "name": [{ "family": "Smith", "given": ["John"] }],
+    "gender": "male",
+    "birthDate": "1990-05-15"
+  },
+  {
+    "resourceType": "Patient",
+    "name": [{ "family": "Johnson", "given": ["Alice"] }],
+    "gender": "female",
+    "birthDate": "1985-03-20"
+  },
+  {
+    "resourceType": "Patient",
+    "name": [{ "family": "Williams", "given": ["Bob"] }],
+    "gender": "male",
+    "birthDate": "1978-11-02"
+  }
+]

@@ -1,6 +1,6 @@
 {
   "name": "fhir-cli",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "The developer toolkit for building FHIR applications",
   "homepage": "https://github.com/medxaidev/fhir-cli#readme",
   "license": "MIT",
@@ -54,6 +54,8 @@
   },
   "files": [
     "dist",
+    "docs",
+    "examples",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
