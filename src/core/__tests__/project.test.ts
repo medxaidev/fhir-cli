@@ -62,19 +62,22 @@ describe('createProject', () => {
     expect(existsSync(pkgPath)).toBe(true);
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
     expect(pkg.name).toBe('test-project');
-    expect(pkg.dependencies['fhir-engine']).toBe('^0.2.0');
+    expect(pkg.dependencies['fhir-engine']).toBe('^0.4.0');
   });
 
   it('includes US Core IG when usCore is true', async () => {
     setup();
-    await createProject(projectDir, { ...baseOptions, usCore: true });
+    const result = await createProject(projectDir, { ...baseOptions, usCore: true });
 
     const config = JSON.parse(
       readFileSync(join(projectDir, 'fhir.config.json'), 'utf-8'),
     );
     expect(config.igs).toHaveLength(2);
     expect(config.igs[1].name).toBe('hl7.fhir.us.core');
-  });
+    // resolvePackages runs — R4 core should resolve; US Core may fail if not cached
+    expect(result).toBeDefined();
+    expect(result.packages.length).toBeGreaterThanOrEqual(1);
+  }, 30_000);
 
   it('generates example Patient resource', async () => {
     setup();

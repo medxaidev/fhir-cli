@@ -4,6 +4,9 @@
 import { resolve, join } from 'node:path';
 import { existsSync } from 'node:fs';
 import fse from 'fs-extra';
+import { resolvePackages, loadFhirConfig } from 'fhir-engine';
+import type { ResolvePackagesResult } from 'fhir-engine';
+export type { ResolvePackagesResult };
 import { CliError, ExitCode } from './error-handler.js';
 
 export interface ProjectOptions {
@@ -52,7 +55,7 @@ function generatePackageJson(options: ProjectOptions): string {
       start: 'fhir engine start',
     },
     dependencies: {
-      'fhir-engine': '^0.2.0',
+      'fhir-engine': '^0.4.0',
     },
   };
   return JSON.stringify(pkg, null, 2) + '\n';
@@ -91,7 +94,7 @@ function generateExamplePatient(): string {
 export async function createProject(
   targetDir: string,
   options: ProjectOptions,
-): Promise<void> {
+): Promise<ResolvePackagesResult> {
   const projectPath = resolve(targetDir);
 
   if (existsSync(projectPath)) {
@@ -129,4 +132,11 @@ export async function createProject(
     join(projectPath, 'resources', 'Patient-example.json'),
     generateExamplePatient(),
   );
+
+  // Resolve FHIR packages: download/link into fhir-packages/
+  const configPath = join(projectPath, 'fhir.config.json');
+  const engineConfig = await loadFhirConfig(configPath);
+  const resolveResult = await resolvePackages(engineConfig);
+
+  return resolveResult;
 }

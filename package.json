@@ -1,6 +1,6 @@
 {
   "name": "fhir-cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "The developer toolkit for building FHIR applications",
   "homepage": "https://github.com/medxaidev/fhir-cli#readme",
   "license": "MIT",
@@ -72,7 +72,7 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^12.1.0",
-    "fhir-engine": "^0.3.0",
+    "fhir-engine": "^0.4.0",
     "fs-extra": "^11.3.0",
     "ora": "^8.2.0",
     "prompts": "^2.4.2"

@@ -25,7 +25,8 @@ describe('createEngineForCli', () => {
       await createEngineForCli({
         database: { type: 'postgres' as any, url: 'postgresql://localhost/test' },
         packages: { path: './fhir-packages' },
-      });
+        igs: [],
+      } as any);
     } catch (e) {
       expect(e).toBeInstanceOf(CliError);
       const err = e as CliError;

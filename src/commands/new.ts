@@ -5,7 +5,7 @@ import { Command } from 'commander';
 import prompts from 'prompts';
 import { createProject } from '../core/project.js';
 import type { ProjectOptions } from '../core/project.js';
-import { printSuccess } from '../core/output.js';
+import { printSuccess, printInfo, printWarning } from '../core/output.js';
 import { handleError } from '../core/error-handler.js';
 
 export const newCommand = new Command('new')
@@ -64,9 +64,25 @@ export const newCommand = new Command('new')
         packageManager: answers.packageManager ?? 'npm',
       };
 
-      await createProject(name, options);
+      const resolveResult = await createProject(name, options);
 
       printSuccess(`项目 ${name} 创建成功。`);
+
+      // Display package resolution results
+      if (resolveResult.success) {
+        for (const pkg of resolveResult.packages) {
+          printInfo(`已解析 ${pkg.name}@${pkg.version} (${pkg.source})`);
+        }
+      } else {
+        for (const pkg of resolveResult.packages) {
+          printInfo(`已解析 ${pkg.name}@${pkg.version} (${pkg.source})`);
+        }
+        for (const err of resolveResult.errors) {
+          printWarning(`${err.name}: ${err.error}`);
+        }
+        printWarning('部分 FHIR 包解析失败，可稍后使用 fhir ig install 重试。');
+      }
+
       console.log(`\n下一步:`);
       console.log(`  cd ${name}`);
       console.log(`  ${options.packageManager} install`);

@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-03-15
+
+### Added
+
+- **Package resolution** — `fhir ig install` now downloads and links FHIR packages automatically
+- **Three-tier resolution strategy**: local → system cache → network download
+- `fhir new` now resolves all configured IGs at project creation time
+- Offline mode support via `packageResolve.allowDownload: false` in config
+- Comprehensive configuration documentation in README.md and examples/README.md
+  - All config field reference with types and descriptions
+  - SQLite, PostgreSQL, offline, and custom IG config examples
+  - Package resolution strategy explained with three methods
+  - Schema migration documentation
+
+### Changed
+
+- Upgraded fhir-engine dependency from ^0.3.0 to ^0.4.0
+- `fhir ig install` now updates config AND downloads/links the package
+- `fhir new` generated `package.json` references fhir-engine ^0.4.0
+- `createProject()` now returns `ResolvePackagesResult` with resolution details
+- `fhir new` displays package resolution results after scaffolding
+
+### Removed
+
+- Deleted `src/core/package-resolver.ts` — package resolution now handled by fhir-engine
+
+### Fixed
+
+- **`fhir ig install` only updated config, didn't download packages** — now resolves packages into `fhir-packages/`
+- **`fhir new` created empty `fhir-packages/`** — now populates it with resolved packages
+- **Engine loaded 0 packages after `fhir new`** — resolved; R4 Core is downloaded automatically
+- **`no such table: Patient_References`** — root cause was missing packages; now fixed
+
 ## [0.2.0] - 2026-03-15
 
 ### Added

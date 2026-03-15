@@ -7,6 +7,7 @@
 import { Command } from 'commander';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { resolvePackages, loadFhirConfig } from 'fhir-engine';
 import { findConfigFile, initEngineForCommand } from '../core/config-loader.js';
 import { printJson, printTable, printSuccess, printInfo, printWarning } from '../core/output.js';
 import { CliError, ExitCode, handleError } from '../core/error-handler.js';
@@ -149,6 +150,25 @@ igCommand
 
       writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
       printInfo(`配置已更新: ${configPath}`);
+
+      // Resolve packages: download/link into fhir-packages/
+      printInfo('正在解析并下载 FHIR 包...');
+      const engineConfig = await loadFhirConfig(configPath);
+      const resolveResult = await resolvePackages(engineConfig, {
+        packages: [{ name, version: version !== 'latest' ? version : undefined }],
+      });
+
+      if (resolveResult.success) {
+        for (const pkg of resolveResult.packages) {
+          printSuccess(`已解析 ${pkg.name}@${pkg.version} (${pkg.source})`);
+        }
+      } else {
+        for (const err of resolveResult.errors) {
+          printWarning(`${err.name}: ${err.error}`);
+        }
+        printWarning('部分包解析失败，请检查网络连接或手动放置包到 fhir-packages/ 目录。');
+      }
+
       printInfo('请重启引擎以加载新的 IG。');
     } catch (error) {
       handleError(error);
