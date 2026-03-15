@@ -5,7 +5,7 @@ import { Command } from 'commander';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { initEngineForCommand } from '../core/config-loader.js';
-import { printJson, printSuccess } from '../core/output.js';
+import { printJson, printSuccess, printTable } from '../core/output.js';
 import { CliError, ExitCode, handleError } from '../core/error-handler.js';
 
 export const resourceCommand = new Command('resource')
@@ -120,4 +120,42 @@ resourceCommand
     }
   });
 
-// history subcommand — Phase 2 (requires FhirStore API, not available on FhirPersistence facade)
+resourceCommand
+  .command('history <reference>')
+  .description('查看资源版本历史 (格式: ResourceType/id)')
+  .option('--config <path>', '配置文件路径')
+  .option('--format <format>', '输出格式 (json|table)', 'json')
+  .action(async (reference: string, opts: { config?: string; format?: string }) => {
+    try {
+      const engine = await initEngineForCommand(opts);
+      const [resourceType, id] = reference.split('/');
+      if (!resourceType || !id) {
+        throw new CliError(
+          `无效的资源引用: ${reference}`,
+          'INVALID_REFERENCE',
+          ExitCode.RUNTIME_ERROR,
+          '格式: ResourceType/id，例如: Patient/123',
+        );
+      }
+
+      const history = await engine.persistence.readHistory(resourceType, id);
+
+      if (opts.format === 'table') {
+        printTable(
+          (history as Array<{ versionId: string; lastUpdated: string; deleted: boolean }>).map(
+            (entry) => ({
+              versionId: entry.versionId,
+              lastUpdated: entry.lastUpdated,
+              deleted: entry.deleted ? '是' : '否',
+            }),
+          ),
+        );
+      } else {
+        printJson(history);
+      }
+
+      await engine.stop();
+    } catch (error) {
+      handleError(error);
+    }
+  });

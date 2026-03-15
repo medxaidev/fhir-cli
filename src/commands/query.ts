@@ -1,11 +1,9 @@
 /**
  * `fhir query <ResourceType[?params]>` — FHIR search.
+ *
+ * Uses engine.search() high-level API (fhir-engine v0.3.0+).
  */
 import { Command } from 'commander';
-import {
-  parseSearchRequest,
-  executeSearch,
-} from 'fhir-engine';
 import { initEngineForCommand } from '../core/config-loader.js';
 import { printJson, printTable } from '../core/output.js';
 import { CliError, ExitCode, handleError } from '../core/error-handler.js';
@@ -61,20 +59,8 @@ export const queryCommand = new Command('query')
           queryParams['_count'] = opts.count;
         }
 
-        // Parse search request using persistence search utilities
-        const request = parseSearchRequest(
-          resourceType,
-          queryParams,
-          engine.spRegistry,
-        );
-
-        // Execute search via engine's adapter + registry
-        const result = await executeSearch(
-          engine.adapter,
-          request,
-          engine.spRegistry,
-          { total: 'accurate' },
-        );
+        // Use engine.search() high-level API
+        const result = await engine.search(resourceType, queryParams);
 
         if (opts.format === 'table') {
           const rows = (result.resources ?? []).map(

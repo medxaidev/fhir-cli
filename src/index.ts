@@ -12,6 +12,7 @@ import { validateCommand } from './commands/validate.js';
 import { pathCommand } from './commands/path.js';
 import { igCommand } from './commands/ig.js';
 import { doctorCommand } from './commands/doctor.js';
+import { engineCommand } from './commands/engine.js';
 
 const program = new Command();
 
@@ -28,5 +29,6 @@ program.addCommand(validateCommand);
 program.addCommand(pathCommand);
 program.addCommand(igCommand);
 program.addCommand(doctorCommand);
+program.addCommand(engineCommand);
 
 program.parse(process.argv);
