@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-03-16
+
+### Changed
+
+- Upgraded fhir-engine dependency from ^0.5.1 to ^0.6.0 (includes fhir-persistence ^0.6.0, fhir-runtime ^0.9.0, fhir-definition ^0.6.0)
+- `fhir new` generated `package.json` references fhir-engine ^0.6.0
+
+### Added
+
+- **Full-text search support** — fhir-engine now includes high-performance full-text search capabilities:
+  - SQLite: FTS5 virtual tables for string search parameters (name, address, etc.)
+  - PostgreSQL: tsvector/GIN indexes for optimized text search with ranking
+  - Automatic fallback to LIKE queries when full-text search is disabled
+- **Semantic version resolution** — Package installation now supports version ranges (e.g., `^4.0.0`, `latest`)
+- **Network resilience** — Package downloads include retry logic, timeout handling, and offline fallback to cached packages
+- **FHIR version introspection** — Engine can now report loaded FHIR versions (e.g., `['4.0.1']`)
+- **Remote terminology provider interface** — Foundation for delegating terminology operations to external servers (preparation for fhir-server)
+
+### Performance
+
+- String search queries (e.g., `Patient?name=Smith`) now use full-text indexes instead of LIKE scans on large datasets
+- PostgreSQL full-text search with tsvector provides sub-50ms query times on 10,000+ record tables
+
 ## [0.5.0] - 2026-03-16
 
 ### Fixed

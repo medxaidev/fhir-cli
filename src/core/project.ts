@@ -55,7 +55,7 @@ function generatePackageJson(options: ProjectOptions): string {
       start: 'fhir engine start',
     },
     dependencies: {
-      'fhir-engine': '^0.5.1',
+      'fhir-engine': '^0.6.0',
     },
   };
   return JSON.stringify(pkg, null, 2) + '\n';

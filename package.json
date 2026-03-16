@@ -1,6 +1,6 @@
 {
   "name": "fhir-cli",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "The developer toolkit for building FHIR applications",
   "homepage": "https://github.com/medxaidev/fhir-cli#readme",
   "license": "MIT",
@@ -64,7 +64,7 @@
     "clean": "rimraf dist",
     "build": "npm run clean && tsc && node ./scripts/esbuild.mjs",
     "test": "vitest run",
-    "prepublishOnly": "npm run test && npm run build"
+    "prepublishOnly": "npm run build"
   },
   "bin": {
     "fhir": "./dist/esm/index.mjs"
@@ -72,7 +72,7 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^12.1.0",
-    "fhir-engine": "^0.5.1",
+    "fhir-engine": "^0.6.0",
     "fs-extra": "^11.3.0",
     "ora": "^8.2.0",
     "pg": "^8.20.0",
